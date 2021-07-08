@@ -97,7 +97,7 @@ func PopulateFuse8(keys []uint64) (*Fuse8, error) {
 	iterations := 0
 	for true {
 		iterations += 1
-		if iterations > MaxIterations {
+		if iterations > DefaultMaxIterations {
 			return nil, errors.New("too many iterations, you probably have duplicate keys")
 		}
 

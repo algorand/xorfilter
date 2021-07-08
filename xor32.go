@@ -4,11 +4,13 @@ import (
 	"math"
 )
 
+// Xor32 holds an xorfilter with approximately 32 bits per element and about one in a billion false positives.
 type Xor32 struct {
 	XorFilterCommon
 	Fingerprints []uint32
 }
 
+// Populate32 creates an xor filter with approx 32 bits per element.
 func Populate32(keys []uint64) (*Xor32, error) {
 	var bld Builder
 	return bld.Populate32(keys)
@@ -36,6 +38,7 @@ func (filter *Xor32) allocate(size int) {
 	filter.BlockLength = capacity / 3
 }
 
+// Populate32 creates an xor filter with approx 32 bits per element.
 func (bld *Builder) Populate32(keys []uint64) (*Xor32, error) {
 	size := len(keys)
 	filter := new(Xor32)

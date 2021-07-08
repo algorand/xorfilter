@@ -15,6 +15,7 @@ type XorN struct {
 	Fingerprints []uint32
 }
 
+// PopulateN creates an xor filter with tunable number of bits per element.
 func PopulateN(keys []uint64, bits int) (*XorN, error) {
 	var bld Builder
 	return bld.PopulateN(keys, bits)
@@ -47,6 +48,7 @@ func (filter *XorN) allocate(size int) {
 	filter.BlockLength = capacity / 3
 }
 
+// PopulateN creates an xor filter with tunable number of bits per element.
 func (bld *Builder) PopulateN(keys []uint64, bits int) (*XorN, error) {
 	size := len(keys)
 	filter := new(XorN)

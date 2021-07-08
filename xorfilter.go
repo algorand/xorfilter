@@ -108,11 +108,15 @@ func resetSets(setsi []xorset) []xorset {
 	return setsi
 }
 
-// The maximum  number of iterations allowed before the populate function returns an error
-var MaxIterations = 100
+// DefaultMaxIterations is maximum  number of iterations allowed before the populate function returns an error
+var DefaultMaxIterations = 100
 
 // Builder holds allocated structures so that repeated filter construction can have a lower garbage collection overhead
 type Builder struct {
+	// MaxIterations controls how many times an internal process will be re-mixed to avoid collisions.
+	// Defailts to 100 but lower values can be useful if there is an alternate bloom filter algorithm to fall back on.
+	MaxIterations int
+
 	kiStore  []keyindex
 	setStore []xorset
 
@@ -181,6 +185,7 @@ func (bld *Builder) getSets(blockLength int) (sets0, sets1, sets2 []xorset) {
 	return
 }
 
+// Populate compiles an xorfilter with approx 8 bits per element from uint64 keys.
 func Populate(keys []uint64) (*Xor8, error) {
 	var bld Builder
 	return bld.Populate(keys)
@@ -233,10 +238,14 @@ func (bld *Builder) populateCommon(keys []uint64, filter *XorFilterCommon) (stac
 	stack, Q0, Q1, Q2 := bld.getKeyIndexes(size, int(filter.BlockLength))
 	sets0, sets1, sets2 := bld.getSets(int(filter.BlockLength))
 	iterations := 0
+	maxIterations := bld.MaxIterations
+	if maxIterations == 0 {
+		maxIterations = DefaultMaxIterations
+	}
 
 	for {
-		iterations += 1
-		if iterations > MaxIterations {
+		iterations++
+		if iterations > maxIterations {
 			return nil, ErrTooManyIterations
 		}
 
