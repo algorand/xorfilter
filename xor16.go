@@ -10,6 +10,7 @@ type Xor16 struct {
 	Fingerprints []uint16
 }
 
+// Populate16 creates an xor filter with approx 16 bits per element.
 func Populate16(keys []uint64) (*Xor16, error) {
 	var bld Builder
 	return bld.Populate16(keys)
@@ -37,6 +38,7 @@ func (filter *Xor16) allocate(size int) {
 	filter.BlockLength = capacity / 3
 }
 
+// Populate16 creates an xor filter with approx 16 bits per element.
 func (bld *Builder) Populate16(keys []uint64) (*Xor16, error) {
 	size := len(keys)
 	filter := new(Xor16)

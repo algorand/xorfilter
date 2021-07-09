@@ -6,6 +6,7 @@ type Xor8 struct {
 	Fingerprints []uint8
 }
 
+// XorFilterCommon gets embedded into Xor8, Xor16, Xor32, XorN
 type XorFilterCommon struct {
 	Seed        uint64
 	BlockLength uint32
