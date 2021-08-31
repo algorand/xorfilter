@@ -120,7 +120,7 @@ type Builder struct {
 	kiStore  []keyindex
 	setStore []xorset
 
-	rngcounter uint64
+	RandomNumberGeneratorSeed uint64
 }
 
 func ensureKeyindexes(v []keyindex, n int) []keyindex {
@@ -230,10 +230,10 @@ func (bld *Builder) Populate(keys []uint64) (*Xor8, error) {
 
 func (bld *Builder) populateCommon(keys []uint64, filter *XorFilterCommon) (stack []keyindex, err error) {
 	size := len(keys)
-	if bld.rngcounter == 0 {
-		bld.rngcounter = 1
+	if bld.RandomNumberGeneratorSeed == 0 {
+		bld.RandomNumberGeneratorSeed = 1
 	}
-	filter.Seed = splitmix64(&bld.rngcounter)
+	filter.Seed = splitmix64(&bld.RandomNumberGeneratorSeed)
 
 	stack, Q0, Q1, Q2 := bld.getKeyIndexes(size, int(filter.BlockLength))
 	sets0, sets1, sets2 := bld.getSets(int(filter.BlockLength))
@@ -366,7 +366,7 @@ func (bld *Builder) populateCommon(keys []uint64, filter *XorFilterCommon) (stac
 		sets1 = resetSets(sets1)
 		sets2 = resetSets(sets2)
 
-		filter.Seed = splitmix64(&bld.rngcounter)
+		filter.Seed = splitmix64(&bld.RandomNumberGeneratorSeed)
 	}
 	return stack, nil
 }
